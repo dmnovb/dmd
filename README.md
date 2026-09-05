@@ -11,7 +11,11 @@ Live at [https://dmdfurniture.uk](https://dmdfurniture.uk) (also [www](https://w
 - Cloudflare Worker for the site and `POST /api/contact`
 - Resend for enquiry email
 
-Copy and project slots live in [`src/data/site.ts`](src/data/site.ts). Drop photos in `public/hero.jpg` and `public/projects/`, then set `heroPhoto` / `project.image` in that file.
+Copy is English and Bulgarian. Strings live in [`src/i18n/copy.ts`](src/i18n/copy.ts). Phone, email, and photo slots stay in [`src/data/site.ts`](src/data/site.ts). Drop photos in `public/hero.jpg` and `public/projects/`, then set `heroPhoto` / `project.image` in that file.
+
+The header switch is EN / BG. A saved choice and `?lang=bg` or `?lang=en` win. Otherwise the default is Bulgarian when Cloudflare says the visitor is in Bulgaria (`request.cf.country === BG`), and English everywhere else. The HTML for `/` is not cached publicly, so that country does not leak into another visitor’s page.
+
+Local Vite has no Cloudflare country. If the machine timezone is `Europe/Sofia`, the default is Bulgarian.
 
 ## Local
 

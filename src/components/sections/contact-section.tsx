@@ -4,27 +4,33 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { business, contact } from '@/data/site'
+import { business } from '@/data/site'
+import type { Copy } from '@/i18n/copy'
+import { useLocale } from '@/i18n/locale'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
+type ErrorKey = keyof Copy['contact']['errors']
 
-const errors: Record<string, string> = {
-  invalid: 'Add an email and a short note about the project.',
-  too_long: 'That note is too long — try a shorter version.',
-  too_many_files: 'You can attach up to five files.',
-  file_too_large: 'Those files are too large. Keep each under 8 MB.',
-  send_failed: 'It did not go through. Try again, or ring the number on the right.',
-  not_configured: 'It did not go through. Try again, or ring the number on the right.',
+function isErrorKey(value: string | undefined): value is ErrorKey {
+  return (
+    value === 'invalid' ||
+    value === 'too_long' ||
+    value === 'too_many_files' ||
+    value === 'file_too_large' ||
+    value === 'send_failed' ||
+    value === 'not_configured'
+  )
 }
 
 export function ContactSection() {
+  const { locale, t } = useLocale()
   const [status, setStatus] = useState<Status>('idle')
-  const [error, setError] = useState<string | null>(null)
+  const [errorKey, setErrorKey] = useState<ErrorKey | null>(null)
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setStatus('sending')
-    setError(null)
+    setErrorKey(null)
 
     try {
       const response = await fetch('/api/contact', {
@@ -34,14 +40,14 @@ export function ContactSection() {
       const payload = (await response.json()) as { ok?: boolean; error?: string }
 
       if (!response.ok || !payload.ok) {
-        setError(errors[payload.error ?? ''] ?? errors.send_failed)
+        setErrorKey(isErrorKey(payload.error) ? payload.error : 'send_failed')
         setStatus('error')
         return
       }
 
       setStatus('sent')
     } catch {
-      setError(errors.send_failed)
+      setErrorKey('send_failed')
       setStatus('error')
     }
   }
@@ -53,17 +59,17 @@ export function ContactSection() {
     >
       <div className="max-w-xl">
         <h2 className="text-3xl font-medium tracking-tight text-balance sm:text-4xl">
-          {contact.heading}
+          {t.contact.heading}
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground text-pretty">
-          {contact.standfirst}
+          {t.contact.standfirst}
         </p>
       </div>
 
       <div className="mt-16 grid gap-16 lg:grid-cols-[minmax(0,1fr)_14rem]">
         {status === 'sent' ? (
           <p className="max-w-xl text-lg font-medium tracking-tight">
-            Sent. I will write back in a few days.
+            {t.contact.sent}
           </p>
         ) : (
           <form onSubmit={onSubmit} className="max-w-xl space-y-6">
@@ -71,18 +77,19 @@ export function ContactSection() {
               <label htmlFor="website">Website</label>
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
             </div>
+            <input type="hidden" name="locale" value={locale} />
 
             <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t.contact.name}</Label>
               <Input
                 id="name"
                 name="name"
                 autoComplete="name"
-                placeholder="Optional"
+                placeholder={t.contact.namePlaceholder}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.contact.email}</Label>
               <Input
                 id="email"
                 name="email"
@@ -93,18 +100,18 @@ export function ContactSection() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="project">The project</Label>
+              <Label htmlFor="project">{t.contact.project}</Label>
               <Textarea
                 id="project"
                 name="project"
                 required
                 rows={7}
-                placeholder="The room, what you want, and anything you already have — photos, a sketch, a quote."
+                placeholder={t.contact.projectPlaceholder}
                 className="resize-y"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="photos">Photos</Label>
+              <Label htmlFor="photos">{t.contact.photos}</Label>
               <Input
                 id="photos"
                 name="photos"
@@ -114,19 +121,21 @@ export function ContactSection() {
                 className="h-auto py-2 file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium"
               />
               <p className="text-xs text-muted-foreground">
-                Optional. Up to five images or PDFs, 8 MB each.
+                {t.contact.photosHint}
               </p>
             </div>
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
+            {errorKey ? (
+              <p className="text-sm text-destructive">{t.contact.errors[errorKey]}</p>
+            ) : null}
             <Button type="submit" size="lg" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Sending…' : 'Send the enquiry'}
+              {status === 'sending' ? t.contact.sending : t.contact.submit}
             </Button>
           </form>
         )}
 
         <aside className="space-y-8 text-sm">
           <div>
-            <p className="text-muted-foreground">Email</p>
+            <p className="text-muted-foreground">{t.contact.email}</p>
             <a
               href={`mailto:${business.email}`}
               className="mt-1 block underline-offset-4 hover:underline"
@@ -135,7 +144,7 @@ export function ContactSection() {
             </a>
           </div>
           <div>
-            <p className="text-muted-foreground">Telephone</p>
+            <p className="text-muted-foreground">{t.contact.telephone}</p>
             <a
               href={`tel:${business.phoneHref}`}
               className="mt-1 block underline-offset-4 hover:underline"
@@ -144,8 +153,8 @@ export function ContactSection() {
             </a>
           </div>
           <div>
-            <p className="text-muted-foreground">Hours</p>
-            <p className="mt-1">{business.hours}</p>
+            <p className="text-muted-foreground">{t.contact.hoursLabel}</p>
+            <p className="mt-1">{t.contact.hours}</p>
           </div>
         </aside>
       </div>

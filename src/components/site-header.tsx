@@ -1,8 +1,12 @@
+import { LanguageSwitch } from '@/components/language-switch'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
-import { business, nav } from '@/data/site'
+import { business } from '@/data/site'
+import { useLocale } from '@/i18n/locale'
 
 export function SiteHeader() {
+  const { t } = useLocale()
+
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-6 px-6 sm:h-20 sm:px-8">
@@ -11,7 +15,7 @@ export function SiteHeader() {
         </a>
 
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          {nav.map((item) => (
+          {t.nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -22,10 +26,11 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <LanguageSwitch />
           <ModeToggle />
           <Button asChild>
-            <a href="#contact">Send your project</a>
+            <a href="#contact">{t.header.send}</a>
           </Button>
         </div>
       </div>

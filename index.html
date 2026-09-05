@@ -12,6 +12,7 @@
       name="description"
       content="Send a kitchen or furniture project. Get a materials plan and a next step — DIY, another tradesperson, or a build."
     />
+    <script id="geo-boot">window.__COUNTRY__="";</script>
     <script>
       (() => {
         const stored = localStorage.getItem('theme')
@@ -19,6 +20,40 @@
         const isDark =
           stored === 'dark' || ((stored === 'system' || !stored) && prefersDark)
         document.documentElement.classList.toggle('dark', isDark)
+
+        const query = new URLSearchParams(location.search).get('lang')
+        const saved = localStorage.getItem('locale')
+        const cookie = (document.cookie.match(/(?:^|; )dmd-country=([^;]*)/) || [])[1]
+        const country = window.__COUNTRY__ || (cookie ? decodeURIComponent(cookie) : '')
+        const inBulgaria =
+          country === 'BG' ||
+          (!country &&
+            (() => {
+              try {
+                return Intl.DateTimeFormat().resolvedOptions().timeZone === 'Europe/Sofia'
+              } catch {
+                return false
+              }
+            })())
+        const locale =
+          query === 'bg' || query === 'en'
+            ? query
+            : saved === 'bg' || saved === 'en'
+              ? saved
+              : inBulgaria
+                ? 'bg'
+                : 'en'
+        document.documentElement.lang = locale
+        if (locale === 'bg') {
+          document.title = 'DMD — Кухненски и мебелни проекти'
+          const description = document.querySelector('meta[name="description"]')
+          if (description) {
+            description.setAttribute(
+              'content',
+              'Пратете кухненски или мебелен проект. Получавате план за материали и следваща стъпка — сами, друг майстор, или изработка.',
+            )
+          }
+        }
       })()
     </script>
   </head>
