@@ -1,90 +1,80 @@
-# Frontend
+# DMD
 
-Vite + React + Tailwind + shadcn/ui, with Docker for both local HMR and a production nginx build. Run commands from this directory.
+Kitchen and furniture project site for DMD. Visitors send a brief; the owner replies with a materials plan and a next step.
+
+Live at [https://dmdfurniture.uk](https://dmdfurniture.uk) (also [www](https://www.dmdfurniture.uk)).
 
 ## Stack
 
-- Vite 8 + React 19 + TypeScript
-- Tailwind CSS 4 (`@tailwindcss/vite`)
-- shadcn/ui (Nova / Radix)
-- `.docker/Dockerfile.base` (Node OS + deps) with `.docker/local/` and `.docker/remote/` overlays
+- Vite 8, React 19, TypeScript
+- Tailwind CSS 4 and shadcn/ui
+- Cloudflare Worker for the site and `POST /api/contact`
+- Resend for enquiry email
 
-## Start locally
+Copy and project slots live in [`src/data/site.ts`](src/data/site.ts). Drop photos in `public/hero.jpg` and `public/projects/`, then set `heroPhoto` / `project.image` in that file.
+
+## Local
 
 ```sh
 npm install
 npm run dev
 ```
 
-App runs at [http://localhost:5173](http://localhost:5173).
+UI: [http://localhost:5173](http://localhost:5173).
 
-## Start with Docker
-
-Dev server (local overlay, source mounted, HMR on):
+The form posts to `/api/contact`. Vite proxies that to a local Worker:
 
 ```sh
-make docker-start
+cp .dev.vars.example .dev.vars
+# put RESEND_API_KEY in .dev.vars
+npm run dev:api
 ```
 
-Rebuild the local overlay after dependency or Dockerfile changes (drops the anonymous `node_modules` volume and recreates containers):
+`.dev.vars` is gitignored. Never commit it.
+
+## Deploy
 
 ```sh
-make docker-refresh
+npm run deploy
 ```
 
-Production image (remote overlay, static files behind nginx on port 8080):
+That is `npm run build` then `wrangler deploy`. Routes are `dmdfurniture.uk` and `www.dmdfurniture.uk` in [`wrangler.jsonc`](wrangler.jsonc).
+
+Set the Resend key on Cloudflare (not in the repo):
 
 ```sh
-docker compose --profile prod up --build
+npx wrangler secret put RESEND_API_KEY
 ```
 
-Published image from Docker Hub (`latest`, no git pull, no local build):
+`CONTACT_EMAIL` is a Wrangler var. With Resend’s `onboarding@resend.dev` sender, that inbox must be the Resend account email.
+
+Pushes to `main` on [github.com/dmnovb/dmd](https://github.com/dmnovb/dmd) are the source of truth. Connect the repo under the Worker’s **Builds** settings if you want Cloudflare to deploy on push (`npm run build`, then `npx wrangler deploy`).
+
+## Docker
+
+Optional. From this directory:
 
 ```sh
-docker compose --profile hub pull
-docker compose --profile hub up
+make docker-start          # Vite in a container, port 5173
+make docker-refresh        # rebuild after dependency changes
+docker compose --profile prod up --build   # nginx on 8080
 ```
-
-The anonymous `node_modules` volume keeps container installs off your host.
-
-### Docker layout
-
-| Path | Role |
-| --- | --- |
-| `.docker/Dockerfile.base` | Node Alpine base image with `npm ci` and app source |
-| `.docker/local/Dockerfile.local` | Dev overlay; runs Vite via `entrypoint.sh` |
-| `.docker/remote/Dockerfile.remote` | Production overlay; builds static assets and serves nginx |
-| `.docker/local/entrypoint.sh` | Setup, then `exec npm run dev …` (long-running) |
-| `.docker/remote/entrypoint.sh` | Config check, then `exec nginx …` (long-running) |
-
-`make docker-start` and `make docker-refresh` run the **local** overlay only (`local` service). The **remote** overlay is the `prod` profile (`remote` service). `base` is a build-only image; the Makefile does not start it as a container.
-
-## Publish `latest` (GitHub Actions → Docker Hub)
-
-Pushes to `main` that touch `Frontend/` build the production image and push `bleudechanel/frontend:latest` (and a `sha-…` tag).
-
-Add these on the GitHub repo (**Settings → Secrets and variables → Actions**):
-
-| Name | Where | Value |
-| --- | --- | --- |
-| `DOCKERHUB_USERNAME` | Variable or secret | Docker Hub username |
-| `DOCKERHUB_TOKEN` | Secret | [Access token](https://hub.docker.com/settings/security) with Read & Write |
-
-Override the pull image name with `DOCKERHUB_IMAGE=youruser/frontend:latest` if it is not `bleudechanel/frontend`.
-
-## Add shadcn components
-
-```sh
-npx shadcn@latest add dialog
-```
-
-Then import from `@/components/ui/...`. Theme lives in `src/index.css`. Dark mode uses `next-themes` with a class on `<html>`.
 
 ## Scripts
 
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Vite dev server |
-| `npm run build` | Typecheck + production bundle |
+| `npm run dev:api` | Wrangler on port 8787 (contact API) |
+| `npm run build` | Typecheck and production bundle |
 | `npm run preview` | Serve the production bundle |
 | `npm run lint` | Oxlint |
+| `npm run deploy` | Build and deploy with Wrangler |
+
+## shadcn
+
+```sh
+npx shadcn@latest add dialog
+```
+
+Import from `@/components/ui/...`. Theme is in `src/index.css`. Dark mode uses `next-themes` on `<html>`.
