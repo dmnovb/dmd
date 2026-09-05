@@ -1,10 +1,24 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "dmd",
-  // Workers Builds requires this to match the Worker name in the dashboard.
   "compatibility_date": "2026-09-05",
+  "workers_dev": true,
+  "main": "./worker/index.ts",
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "routes": [
+    { "pattern": "dmdfurniture.uk", "custom_domain": true },
+    { "pattern": "www.dmdfurniture.uk", "custom_domain": true },
+  ],
+  // Inbox that receives project briefs. Must be the same address as the Resend account
+  // while using onboarding@resend.dev (testing sender).
+  "vars": {
+    "CONTACT_EMAIL": "damyanov_d@yahoo.co.uk",
   },
 }

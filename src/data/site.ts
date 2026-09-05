@@ -5,9 +5,9 @@
 
 export const business = {
   name: 'DMD',
-  email: 'hello@example.com',
-  phone: '+359 87 966 7889',
-  phoneHref: '+359879667889',
+  email: 'damyanov_d@yahoo.co.uk',
+  phone: '089 241 0451',
+  phoneHref: '+359892410451',
   hours: 'Weekdays, by appointment',
 } as const
 
@@ -96,6 +96,5 @@ export const projects: Project[] = [
 export const contact = {
   heading: 'Send your project',
   standfirst:
-    'Write what you want to do. When your email app opens, attach the photos there — this form cannot send files.',
-  subject: 'Project from the website',
+    'Write what you want to do and attach photos if you have them. I will reply in a few days.',
 } as const

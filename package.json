@@ -6,6 +6,7 @@
   "description": "Vite + React + Tailwind + shadcn/ui starter with Docker",
   "scripts": {
     "dev": "vite",
+    "dev:api": "wrangler dev --port 8787",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
