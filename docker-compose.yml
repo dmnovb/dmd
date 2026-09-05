@@ -1,0 +1,44 @@
+services:
+  base:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.base
+    image: frontend-base
+
+  local:
+    build:
+      context: .
+      dockerfile: .docker/local/Dockerfile.local
+      additional_contexts:
+        frontend-base: "service:base"
+      args:
+        BASE_IMAGE: frontend-base
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    stdin_open: true
+    tty: true
+
+  remote:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: .docker/remote/Dockerfile.remote
+      additional_contexts:
+        frontend-base: "service:base"
+      args:
+        BASE_IMAGE: frontend-base
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  published:
+    profiles: ["hub"]
+    image: ${DOCKERHUB_IMAGE:-bleudechanel/frontend:latest}
+    ports:
+      - "8080:80"
+    restart: unless-stopped
