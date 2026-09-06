@@ -1,6 +1,9 @@
 name: Release
 
 on:
+  pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       notes:
@@ -9,8 +12,8 @@ on:
         type: string
 
 concurrency:
-  group: release
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -37,6 +40,7 @@ jobs:
 
   release:
     name: Release
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15

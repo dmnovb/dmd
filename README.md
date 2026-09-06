@@ -46,7 +46,7 @@ npm run deploy
 
 That is `npm run build` then `wrangler deploy`. Routes are `dmdfurniture.uk` and `www.dmdfurniture.uk` in [`wrangler.jsonc`](wrangler.jsonc).
 
-Production releases are manual. In GitHub: **Actions → Release → Run workflow**. That builds `dist`, deploys the Worker, and creates a GitHub release (`release-N`). It does not run on push.
+Pull requests run the **Build** job only. After a merge to `main`, the same workflow also deploys the Worker and creates a GitHub release (`release-N`). You can still run **Actions → Release → Run workflow** from `main` to redeploy.
 
 Repo secrets (Settings → Secrets and variables → Actions):
 
