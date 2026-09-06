@@ -38,21 +38,32 @@ npm run dev:api
 
 ## Deploy
 
+Local:
+
 ```sh
 npm run deploy
 ```
 
 That is `npm run build` then `wrangler deploy`. Routes are `dmdfurniture.uk` and `www.dmdfurniture.uk` in [`wrangler.jsonc`](wrangler.jsonc).
 
-Set the Resend key on Cloudflare (not in the repo):
+Pull requests run the **Build** job only. After a merge to `main`, the same workflow also deploys the Worker and creates a GitHub release (`release-N`). You can still run **Actions → Release → Run workflow** from `main` to redeploy.
+
+Repo secrets (Settings → Secrets and variables → Actions):
+
+| Secret | What it is |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Account API token with **Edit Cloudflare Workers** |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID |
+
+Create the token in the [Cloudflare dashboard](https://dash.cloudflare.com/profile/api-tokens). Scope it to this account only.
+
+Set the Resend key on Cloudflare (not in the repo, not in GitHub):
 
 ```sh
 npx wrangler secret put RESEND_API_KEY
 ```
 
 `CONTACT_EMAIL` is a Wrangler var. With Resend’s `onboarding@resend.dev` sender, that inbox must be the Resend account email.
-
-Pushes to `main` on [github.com/dmnovb/dmd](https://github.com/dmnovb/dmd) are the source of truth. Connect the repo under the Worker’s **Builds** settings if you want Cloudflare to deploy on push (`npm run build`, then `npx wrangler deploy`).
 
 ## Docker
 
