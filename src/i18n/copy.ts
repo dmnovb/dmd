@@ -62,6 +62,7 @@ export type Copy = {
       too_long: string
       too_many_files: string
       file_too_large: string
+      file_type: string
       send_failed: string
       not_configured: string
     }
@@ -173,7 +174,7 @@ export const copy: Record<Locale, Copy> = {
       projectPlaceholder:
         'The room, what you want, and anything you already have — photos, a sketch, a quote.',
       photos: 'Photos',
-      photosHint: 'Optional. Up to five images or PDFs, 8 MB each.',
+      photosHint: 'Optional. Up to five JPEG, PNG, WebP, or PDF files, 8 MB each.',
       sending: 'Sending…',
       submit: 'Send the enquiry',
       sent: 'Sent. I will write back in a few days.',
@@ -185,6 +186,7 @@ export const copy: Record<Locale, Copy> = {
         too_long: 'That note is too long — try a shorter version.',
         too_many_files: 'You can attach up to five files.',
         file_too_large: 'Those files are too large. Keep each under 8 MB.',
+        file_type: 'Those files are not allowed. Use JPEG, PNG, WebP, or PDF.',
         send_failed:
           'It did not go through. Try again, or ring the number on the right.',
         not_configured:
@@ -297,7 +299,7 @@ export const copy: Record<Locale, Copy> = {
       projectPlaceholder:
         'Помещението, какво искате и каквото вече имате — снимки, скица, оферта.',
       photos: 'Снимки',
-      photosHint: 'По желание. До пет снимки или PDF, по 8 MB.',
+      photosHint: 'По желание. До пет JPEG, PNG, WebP или PDF, по 8 MB.',
       sending: 'Изпращане…',
       submit: 'Изпратете запитването',
       sent: 'Изпратено. Ще отговоря след няколко дни.',
@@ -309,6 +311,7 @@ export const copy: Record<Locale, Copy> = {
         too_long: 'Бележката е твърде дълга — опитайте по-кратка версия.',
         too_many_files: 'Може да прикачите до пет файла.',
         file_too_large: 'Файловете са твърде големи. Всеки да е под 8 MB.',
+        file_type: 'Тези файлове не стават. Използвайте JPEG, PNG, WebP или PDF.',
         send_failed:
           'Не мина. Опитайте пак или се обадете на номера вдясно.',
         not_configured:

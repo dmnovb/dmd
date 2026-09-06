@@ -17,6 +17,7 @@ function isErrorKey(value: string | undefined): value is ErrorKey {
     value === 'too_long' ||
     value === 'too_many_files' ||
     value === 'file_too_large' ||
+    value === 'file_type' ||
     value === 'send_failed' ||
     value === 'not_configured'
   )
@@ -85,6 +86,7 @@ export function ContactSection() {
                 id="name"
                 name="name"
                 autoComplete="name"
+                maxLength={100}
                 placeholder={t.contact.namePlaceholder}
               />
             </div>
@@ -95,6 +97,7 @@ export function ContactSection() {
                 name="email"
                 type="email"
                 required
+                maxLength={254}
                 autoComplete="email"
                 placeholder="you@example.com"
               />
@@ -105,6 +108,7 @@ export function ContactSection() {
                 id="project"
                 name="project"
                 required
+                maxLength={8000}
                 rows={7}
                 placeholder={t.contact.projectPlaceholder}
                 className="resize-y"
@@ -116,7 +120,7 @@ export function ContactSection() {
                 id="photos"
                 name="photos"
                 type="file"
-                accept="image/*,.pdf"
+                accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"
                 multiple
                 className="h-auto py-2 file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium"
               />
