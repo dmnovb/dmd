@@ -1,4 +1,4 @@
-import type { ProjectId } from '@/data/site'
+import type { ProjectCategoryId } from '@/data/site'
 
 export const locales = ['en', 'bg'] as const
 
@@ -39,7 +39,13 @@ export type Copy = {
   projects: {
     heading: string
     standfirst: string
-    items: Record<ProjectId, { title: string; caption: string }>
+    photoAlt: Record<ProjectCategoryId, string>
+    categories: Record<ProjectCategoryId, { title: string; caption: string }>
+    lightbox: {
+      close: string
+      previous: string
+      next: string
+    }
   }
   contact: {
     heading: string
@@ -50,6 +56,8 @@ export type Copy = {
     project: string
     projectPlaceholder: string
     photos: string
+    photosChoose: string
+    photosEmpty: string
     photosHint: string
     sending: string
     submit: string
@@ -108,7 +116,7 @@ export const copy: Record<Locale, Copy> = {
       items: [
         {
           title: 'A plan of action',
-          body: 'The order of work, what to decide first, and what can wait. Kitchens mostly — furniture and built-ins too.',
+          body: 'The order of work, what to decide first, and what can wait. Kitchens mostly — bathrooms, wardrobes, and other built-ins too.',
         },
         {
           title: 'Materials and hardware',
@@ -143,24 +151,30 @@ export const copy: Record<Locale, Copy> = {
     },
     projects: {
       heading: 'Projects',
-      standfirst: 'Recent kitchens and one piece of furniture.',
-      items: {
-        'kitchen-north': {
-          title: 'Kitchen, north side',
-          caption: 'Full kitchen. Cabinets, worktops, and the run to the window.',
+      standfirst: 'Recent kitchens, built-in wardrobes, and bathrooms.',
+      photoAlt: {
+        kitchens: 'Kitchen project',
+        wardrobes: 'Built-in wardrobe',
+        bathrooms: 'Bathroom project',
+      },
+      categories: {
+        kitchens: {
+          title: 'Kitchens',
+          caption: 'Runs of units, worktops, and the fittings that go with them.',
         },
-        'kitchen-terrace': {
-          title: 'Kitchen, terrace house',
-          caption: 'Narrow galley. New run of units and a single stretch of worktop.',
+        wardrobes: {
+          title: 'Wardrobes',
+          caption: 'Floor-to-ceiling storage, scribed to the room.',
         },
-        wardrobe: {
-          title: 'Built-in wardrobe',
-          caption: 'Floor to ceiling, scribed to an alcove that was not square.',
+        bathrooms: {
+          title: 'Bathrooms',
+          caption: 'Vanities, vessel sinks, and the joinery around them.',
         },
-        table: {
-          title: 'Dining table',
-          caption: 'Solid hardwood, made for an eight-seat room.',
-        },
+      },
+      lightbox: {
+        close: 'Close',
+        previous: 'Previous',
+        next: 'Next',
       },
     },
     contact: {
@@ -174,6 +188,8 @@ export const copy: Record<Locale, Copy> = {
       projectPlaceholder:
         'The room, what you want, and anything you already have — photos, a sketch, a quote.',
       photos: 'Photos',
+      photosChoose: 'Choose files',
+      photosEmpty: 'No file chosen',
       photosHint: 'Optional. Up to five JPEG, PNG, WebP, or PDF files, 8 MB each.',
       sending: 'Sending…',
       submit: 'Send the enquiry',
@@ -233,7 +249,7 @@ export const copy: Record<Locale, Copy> = {
       items: [
         {
           title: 'План за действие',
-          body: 'Редът на работата, какво да решите първо и какво може да почака. Предимно кухни — мебели и вградени също.',
+          body: 'Редът на работата, какво да решите първо и какво може да почака. Предимно кухни — бани, гардероби и други вградени също.',
         },
         {
           title: 'Материали и обков',
@@ -268,24 +284,30 @@ export const copy: Record<Locale, Copy> = {
     },
     projects: {
       heading: 'Проекти',
-      standfirst: 'Последни кухни и една мебел.',
-      items: {
-        'kitchen-north': {
-          title: 'Кухня, северна страна',
-          caption: 'Цяла кухня. Шкафове, плотове и линията до прозореца.',
+      standfirst: 'Последни кухни, вградени гардероби и бани.',
+      photoAlt: {
+        kitchens: 'Кухненски проект',
+        wardrobes: 'Вграден гардероб',
+        bathrooms: 'Баня',
+      },
+      categories: {
+        kitchens: {
+          title: 'Кухни',
+          caption: 'Линии шкафове, плотове и обковът към тях.',
         },
-        'kitchen-terrace': {
-          title: 'Кухня, редова къща',
-          caption: 'Тясна галерия. Нова линия шкафове и един участък плот.',
+        wardrobes: {
+          title: 'Гардероби',
+          caption: 'От пода до тавана, припасани към помещението.',
         },
-        wardrobe: {
-          title: 'Вграден гардероб',
-          caption: 'От пода до тавана, припаснат към ниша, която не беше права.',
+        bathrooms: {
+          title: 'Бани',
+          caption: 'Шкафове за мивка и дърводелството около тях.',
         },
-        table: {
-          title: 'Трапезна маса',
-          caption: 'Масивно дърво, за стая с осем места.',
-        },
+      },
+      lightbox: {
+        close: 'Затвори',
+        previous: 'Предишна',
+        next: 'Следваща',
       },
     },
     contact: {
@@ -299,6 +321,8 @@ export const copy: Record<Locale, Copy> = {
       projectPlaceholder:
         'Помещението, какво искате и каквото вече имате — снимки, скица, оферта.',
       photos: 'Снимки',
+      photosChoose: 'Изберете файлове',
+      photosEmpty: 'Няма избран файл',
       photosHint: 'По желание. До пет JPEG, PNG, WebP или PDF, по 8 MB.',
       sending: 'Изпращане…',
       submit: 'Изпратете запитването',

@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "dmd",
+  // Default deploy target: workers.dev preview only (not custom domains).
+  "name": "dmd-preview",
   "compatibility_date": "2026-09-05",
   "workers_dev": true,
   "main": "./worker/index.ts",
@@ -13,13 +14,20 @@
   "observability": {
     "enabled": true,
   },
-  "routes": [
-    { "pattern": "dmdfurniture.uk", "custom_domain": true },
-    { "pattern": "www.dmdfurniture.uk", "custom_domain": true },
-  ],
   // Inbox that receives project briefs. Must be the same address as the Resend account
   // while using onboarding@resend.dev (testing sender).
   "vars": {
     "CONTACT_EMAIL": "damyanov_d@yahoo.co.uk",
+  },
+  "env": {
+    // Intentional production release: custom domains + the existing `dmd` worker.
+    "production": {
+      "name": "dmd",
+      "workers_dev": true,
+      "routes": [
+        { "pattern": "dmdfurniture.uk", "custom_domain": true },
+        { "pattern": "www.dmdfurniture.uk", "custom_domain": true },
+      ],
+    },
   },
 }
