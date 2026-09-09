@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,10 +23,16 @@ function isErrorKey(value: string | undefined): value is ErrorKey {
   )
 }
 
+function photoSummary(names: string[], empty: string) {
+  if (names.length === 0) return empty
+  return names.join(', ')
+}
+
 export function ContactSection() {
   const { locale, t } = useLocale()
   const [status, setStatus] = useState<Status>('idle')
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null)
+  const [photoNames, setPhotoNames] = useState<string[]>([])
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -116,15 +122,33 @@ export function ContactSection() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="photos">{t.contact.photos}</Label>
-              <Input
-                id="photos"
-                name="photos"
-                type="file"
-                accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"
-                multiple
-                className="h-auto py-2 file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium"
-              />
-              <p className="text-xs text-muted-foreground">
+              <div className="relative flex min-h-8 w-full items-center gap-3 overflow-hidden rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30">
+                <input
+                  id="photos"
+                  name="photos"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"
+                  multiple
+                  lang={locale}
+                  aria-label={`${t.contact.photos}. ${t.contact.photosChoose}. ${photoSummary(photoNames, t.contact.photosEmpty)}`}
+                  aria-describedby="photos-hint"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    setPhotoNames(
+                      Array.from(event.currentTarget.files ?? []).map(
+                        (file) => file.name,
+                      ),
+                    )
+                  }}
+                  className="absolute inset-0 z-10 cursor-pointer opacity-0 file:hidden"
+                />
+                <span aria-hidden="true" className="pointer-events-none shrink-0 font-medium">
+                  {t.contact.photosChoose}
+                </span>
+                <span aria-hidden="true" className="pointer-events-none min-w-0 truncate text-muted-foreground">
+                  {photoSummary(photoNames, t.contact.photosEmpty)}
+                </span>
+              </div>
+              <p id="photos-hint" className="text-xs text-muted-foreground">
                 {t.contact.photosHint}
               </p>
             </div>

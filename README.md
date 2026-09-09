@@ -42,17 +42,24 @@ npm run dev:api
 npm run deploy
 ```
 
-That is `npm run build` then `wrangler deploy`. Routes are `dmdfurniture.uk` and `www.dmdfurniture.uk` in [`wrangler.jsonc`](wrangler.jsonc).
+That is workers.dev preview only (`dmd-preview…workers.dev`). It does **not** update the live site.
 
-Set the Resend key on Cloudflare (not in the repo):
+```bash
+npm run deploy:prod
+```
+
+Production: `dmdfurniture.uk`, `www.dmdfurniture.uk`, and `dmd…workers.dev` (Worker name `dmd`).
+
+Set the Resend key on Cloudflare (not in the repo). Preview and production are separate Workers, so set it on both if you need the contact form in each:
 
 ```sh
 npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put RESEND_API_KEY --env production
 ```
 
 `CONTACT_EMAIL` is a Wrangler var. With Resend’s `onboarding@resend.dev` sender, that inbox must be the Resend account email.
 
-Pushes to `main` on [github.com/dmnovb/dmd](https://github.com/dmnovb/dmd) are the source of truth. Connect the repo under the Worker’s **Builds** settings if you want Cloudflare to deploy on push (`npm run build`, then `npx wrangler deploy`).
+Pushes to `main` on [github.com/dmnovb/dmd](https://github.com/dmnovb/dmd) are the source of truth. Connect the repo under the Worker’s **Builds** settings if you want Cloudflare to deploy on push (`npm run build`, then `npx wrangler deploy --env production`).
 
 ## Docker
 
@@ -73,7 +80,8 @@ docker compose --profile prod up --build   # nginx on 8080
 | `npm run build` | Typecheck and production bundle |
 | `npm run preview` | Serve the production bundle |
 | `npm run lint` | Oxlint |
-| `npm run deploy` | Build and deploy with Wrangler |
+| `npm run deploy` | Build and deploy preview (workers.dev only) |
+| `npm run deploy:prod` | Build and deploy production (custom domains) |
 
 ## shadcn
 
