@@ -33,6 +33,11 @@ export const projectCategories: ProjectCategory[] = [
       '/projects/kitchens/07.jpg',
       '/projects/kitchens/08.jpg',
       '/projects/kitchens/09.jpg',
+      '/projects/kitchens/10.jpg',
+      '/projects/kitchens/11.jpg',
+      '/projects/kitchens/12.jpg',
+      '/projects/kitchens/13.jpg',
+      '/projects/kitchens/14.jpg',
     ],
   },
   {
